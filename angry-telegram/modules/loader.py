@@ -106,6 +106,7 @@ class LoaderMod(loader.Module):
 
     def __init__(self):
         super().__init__()
+        # TODO: Remove modules repo
         self.config = loader.ModuleConfig("MODULES_REPO",
                                           "https://gitlab.com/friendly-telegram/modules-repo/-/raw/master",
                                           lambda m: self.strings("repo_config_doc", m))
@@ -208,7 +209,7 @@ class LoaderMod(loader.Module):
             uid = "__extmod_" + str(uuid.uuid4())
         else:
             uid = name.replace("%", "%%").replace(".", "%d")
-        module_name = "friendly-telegram.modules." + uid
+        module_name = "angry-telegram.modules." + uid
         try:
             try:
                 spec = ModuleSpec(module_name, StringLoader(doc, origin), origin=origin)
@@ -268,8 +269,8 @@ class LoaderMod(loader.Module):
         worked = self.allmodules.unload_module(clazz)
         without_prefix = []
         for mod in worked:
-            assert mod.startswith("friendly-telegram.modules."), mod
-            without_prefix += [unescape_percent(mod[len("friendly-telegram.modules."):])]
+            assert mod.startswith("angry-telegram.modules."), mod
+            without_prefix += [unescape_percent(mod[len("angry-telegram.modules."):])]
         it = set(self._db.get(__name__, "loaded_modules", [])).difference(without_prefix)
         self._db.set(__name__, "loaded_modules", list(it))
         it = set(self._db.get(__name__, "unloaded_modules", [])).union(without_prefix)

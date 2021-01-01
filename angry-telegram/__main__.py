@@ -24,7 +24,7 @@ if sys.version_info < (3, 6, 0):
 else:
     if sys.version_info >= (3, 9, 0):
         print("Warning: you are using an untested Python version")  # pragma: no cover
-    if __package__ != "friendly-telegram":  # In case they did python __main__.py
+    if __package__ != "angry-telegram":  # In case they did python __main__.py
         print("Error: you cannot run this as a script; you must execute as a package")  # pragma: no cover
     else:
         from . import log

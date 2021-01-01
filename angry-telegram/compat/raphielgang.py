@@ -53,6 +53,7 @@ class RaphielgangConfig():
 
         # pylint: disable=C0103
         # Static 'cos I cba
+        # TODO: Use actual creds
         self.API_KEY = 12345
         self.API_HASH = "0123456789abcdef0123456789abcdef"
         self.CONSOLE_LOGGER_VERBOSE = False
@@ -209,7 +210,7 @@ class RaphielgangConfig():
         self.SPOTIFY_USERNAME = None
         self.SPOTIFY_PASS = None
         self.ISAFK = False
-        self.ALIVE_NAME = "`**PPE bad! Use **[friendly-telegram](https://t.me/friendlytgbot)`."
+        self.ALIVE_NAME = "`**PPE good! Although you're using **[ATG](https://t.me/friendlytgbot)`."
 
         self.GDRIVE_FOLDER = self.GDRIVE_FOLDER_ID
         self.GENIUS_API_TOKEN = ""

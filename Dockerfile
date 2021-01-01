@@ -27,11 +27,11 @@ RUN apt-get update \
 # The next line is used to ensure that /data exists. It won't exist if we are running in a CI job.
     && mkdir -p /data
 
-COPY friendly-telegram/ /app/friendly-telegram
+COPY angry-telegram/ /app/angry-telegram
 COPY web-resources/ /app/web-resources
 
 WORKDIR /app
-RUN [ "python", "-Om", "friendly-telegram", "--no-web", "--no-auth", "--docker-deps-internal", "--data-root", "/data" ]
+RUN [ "python", "-Om", "angry-telegram", "--no-web", "--no-auth", "--docker-deps-internal", "--data-root", "/data" ]
 
 STOPSIGNAL SIGINT
 
@@ -40,7 +40,7 @@ HEALTHCHECK CMD [ "python", "-O", "/app/healthcheck.py" ]
 
 ENV PORT=8080
 EXPOSE $PORT
-ENTRYPOINT [ "python", "-Om", "friendly-telegram", "--data-root", "/data" ]
+ENTRYPOINT [ "python", "-Om", "angry-telegram", "--data-root", "/data" ]
 
 FROM main as test
 COPY test-requirements.txt .

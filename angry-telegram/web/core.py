@@ -75,7 +75,6 @@ class Web(initial_setup.Web, root.Web, auth.Web, translate.Web, config.Web, sett
         self.app["static_root_url"] = "/static"
         super().__init__(**kwargs)
         self.app.router.add_static("/static/", "web-resources/static")
-        self.app.router.add_get("/favicon.ico", self.favicon)
 
     async def start_if_ready(self, total_count):
         if total_count <= len(self.client_data):
@@ -99,6 +98,3 @@ class Web(initial_setup.Web, root.Web, auth.Web, translate.Web, config.Web, sett
 
     async def add_loader(self, client, loader, db):
         self.client_data[(await client.get_me(True)).user_id] = (loader, client, db)
-
-    async def favicon(self, request):
-        return web.Response(status=301, headers={"Location": "https://friendly-telegram.gitlab.io/favicon.ico"})

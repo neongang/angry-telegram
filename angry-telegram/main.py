@@ -112,7 +112,7 @@ def get_phones(arguments):
     """Get phones from the --token, --phone, and environment"""
     phones = {phone.split(":", maxsplit=1)[0]: phone for phone in
               map(lambda f: f[18:-8],
-                  filter(lambda f: f.startswith("friendly-telegram-") and f.endswith(".session"),
+                  filter(lambda f: f.startswith("angry-telegram-") and f.endswith(".session"),
                          os.listdir(arguments.data_root or os.path.dirname(utils.get_base_dir()))))}
     phones.update(**({phone.split(":", maxsplit=1)[0]: phone for phone in arguments.phone} if arguments.phone else {}))
 
@@ -271,7 +271,7 @@ def main():  # noqa: C901
                     session = StringSession()
                 else:
                     session = SQLiteSession(os.path.join(arguments.data_root or os.path.dirname(utils.get_base_dir()),
-                                                         "friendly-telegram-" + client.phone))
+                                                         "angry-telegram-" + client.phone))
                 session.set_dc(client.session.dc_id, client.session.server_address, client.session.port)
                 session.auth_key = client.session.auth_key
                 if not arguments.heroku:
@@ -289,11 +289,9 @@ def main():  # noqa: C901
                 print()  # noqa: T001
                 print("It is likely that you tried to deploy to heroku - "  # noqa: T001
                       "you cannot do this via the web interface.")
-                print("To deploy to heroku, go to "  # noqa: T001
-                      "https://friendly-telegram.gitlab.io/heroku to learn more")
                 print()  # noqa: T001
-                print("In addition, you seem to have forked the friendly-telegram repo. THIS IS WRONG!")  # noqa: T001
-                print("You should remove the forked repo, and read https://friendly-telegram.gitlab.io")  # noqa: T001
+                print("In addition, you seem to have forked the angry-telegram repo. THIS IS WRONG!")  # noqa: T001
+                print("You should remove the forked repo")  # noqa: T001
                 print()  # noqa: T001
                 print("If you're not using Heroku, then you are using a non-interactive prompt but "  # noqa: T001
                       "you have not got a session configured, meaning authentication to Telegram is "
@@ -306,7 +304,7 @@ def main():  # noqa: C901
         if arguments.heroku:
             session = StringSession()
         else:
-            session = os.path.join(arguments.data_root or os.path.dirname(utils.get_base_dir()), "friendly-telegram"
+            session = os.path.join(arguments.data_root or os.path.dirname(utils.get_base_dir()), "angry-telegram"
                                    + (("-" + phone_id) if phone_id else ""))
         try:
             client = TelegramClient(session, api_token.ID, api_token.HASH,
@@ -328,7 +326,7 @@ def main():  # noqa: C901
             print("Error initialising phone " + (phone if phone else "unknown") + " " + ",".join(ex.args)  # noqa: T001
                   + ": this is probably your fault. Try checking that this is the only instance running and "
                   "that the session is not copied. If that doesn't help, delete the file named '"
-                  "friendly-telegram" + (("-" + phone) if phone else "") + ".session'")
+                  "angry-telegram" + (("-" + phone) if phone else "") + ".session'")
             continue
         except (ValueError, ApiIdInvalidError):
             # Bad API hash/ID

@@ -1,7 +1,7 @@
 *__pycache__
 *.pyc
-friendly-telegram/api_token.py
-friendly-telegram*.session*
+angry-telegram/api_token.py
+angry-telegram*.session*
 database-*.json
 *.swp
 .setup_complete

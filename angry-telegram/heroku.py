@@ -38,7 +38,7 @@ def publish(clients, key, api_token=None, create_new=True, full_match=False):
         config["api_id"] = api_token.ID
         config["api_hash"] = api_token.HASH
     app.update_buildpacks(["https://github.com/heroku/heroku-buildpack-python",
-                           "https://gitlab.com/friendly-telegram/heroku-buildpack"])
+                           "https://github.com/neongang/atg-heroku-buildpack"])
     repo = get_repo()
     url = app.git_url.replace("https://", "https://api:" + key + "@")
     if "heroku" in repo.remotes:
@@ -77,7 +77,7 @@ def get_repo():
         repo = Repo(os.path.dirname(utils.get_base_dir()))
     except InvalidGitRepositoryError:
         repo = Repo.init(os.path.dirname(utils.get_base_dir()))
-        origin = repo.create_remote("origin", "https://gitlab.com/friendly-telegram/friendly-telegram")
+        origin = repo.create_remote("origin", "https://github.com/neongang/angry-telegram")
         origin.fetch()
         repo.create_head("master", origin.refs.master)
         repo.heads.master.set_tracking_branch(origin.refs.master)

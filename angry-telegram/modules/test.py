@@ -51,8 +51,8 @@ class TestMod(loader.Module):
                "set_loglevel": "<b>Please specify verbosity as an integer or string</b>",
                "uploading_logs": "<b>Uploading logs...</b>",
                "no_logs": "<b>You don't have any logs at verbosity {}.</b>",
-               "logs_filename": "ftg-logs.txt",
-               "logs_caption": "friendly-telegram logs with verbosity {}",
+               "logs_filename": "logs.txt",
+               "logs_caption": "logs with verbosity {}",
                "logs_unsafe": ("<b>Warning: running this command may reveal personal or dangerous information. "
                                "You can write</b> <code>{}</code> <b>at the end to accept the risks</b>"),
                "logs_force": "FORCE_INSECURE",
