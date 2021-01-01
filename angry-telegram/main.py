@@ -111,7 +111,7 @@ def parse_arguments():
 def get_phones(arguments):
     """Get phones from the --token, --phone, and environment"""
     phones = {phone.split(":", maxsplit=1)[0]: phone for phone in
-              map(lambda f: f[18:-8],
+              map(lambda f: f[15:-8],
                   filter(lambda f: f.startswith("angry-telegram-") and f.endswith(".session"),
                          os.listdir(arguments.data_root or os.path.dirname(utils.get_base_dir()))))}
     phones.update(**({phone.split(":", maxsplit=1)[0]: phone for phone in arguments.phone} if arguments.phone else {}))
@@ -333,7 +333,7 @@ def main():  # noqa: C901
             run_config({}, arguments.data_root)
             return
         except PhoneNumberInvalidError:
-            print("Please check the phone number. Use international format (+XX...)"  # noqa: T001
+            print("`Please check` the phone number. Use international format (+XX...)"  # noqa: T001
                   " and don't put spaces in it.")
             continue
     del phones
