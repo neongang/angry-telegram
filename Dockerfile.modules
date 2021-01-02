@@ -14,5 +14,5 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-FROM registry.gitlab.com/neongang/angry-telegram AS modules
+FROM registry.gitlab.com/es3n1n/angry-telegram AS modules
 RUN [ "python", "-Om", "angry-telegram", "--no-web", "--no-auth", "--docker-deps-internal", "--data-root", "/data" ]
