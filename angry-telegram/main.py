@@ -324,8 +324,8 @@ def main():  # noqa: C901
             session = os.path.join(arguments.data_root or os.path.dirname(utils.get_base_dir()), "angry-telegram"
                                    + (("-" + phone_id) if phone_id else ""))
         repo = get_repo()
-        commit = repo.git.rev_parse(repo.head.commit.hexsha,
-                                    short=4)
+        commit = repo.git.rev_parse(repo.head.object.hexsha,
+                                    short=7)
         branch = repo.active_branch.name
         try:
             client = TelegramClient(session, api_token.ID, api_token.HASH,
