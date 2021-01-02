@@ -171,6 +171,7 @@ class Modules():
 
                     modules_files.append((file, rel_file, filepath))
             mods = filter(lambda x: (len(x[0]) > 3 and x[0][-3:] == ".py" and x[0][0] != "_"), modules_files)
+        print(mods)
         for filename, rel_path, full_path in mods:
             try:
                 # IQ 900
