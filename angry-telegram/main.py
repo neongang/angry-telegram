@@ -431,7 +431,10 @@ async def amain(first, client, allclients, web, arguments):
 
     to_load = None
     if arguments.heroku_deps_internal or arguments.docker_deps_internal:
-        to_load = ["loader.py"]
+        to_load = ["loader.py",
+                   "angry-telegram/modules/loader.py",
+                   os.path.join(utils.get_module_dir(),
+                                "angry-telegram/modules/loader.py")]
 
     if __debug__ and arguments.self_test:
         tester = TestManager(client, db, allclients, arguments.self_test)
