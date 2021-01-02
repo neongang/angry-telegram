@@ -41,13 +41,11 @@ from telethon.network.connection import ConnectionTcpFull
 
 from . import utils, loader, heroku, security
 from .dispatcher import CommandDispatcher
+from .heroku import get_repo
 
 
 from .database import backend, local_backend, frontend
 from .translations.core import Translator
-
-from git import Repo
-from git.exc import InvalidGitRepositoryError
 
 if __debug__:
     from .test.core import TestManager
@@ -65,20 +63,6 @@ def run_config(db, data_root, phone=None, modules=None):
     """Load configurator.py"""
     from . import configurator
     return configurator.run(db, data_root, phone, phone is None, modules)
-
-
-def get_repo():
-    """Helper to get the repo, making it if not found"""
-    try:
-        repo = Repo(os.path.dirname(utils.get_base_dir()))
-    except InvalidGitRepositoryError:
-        repo = Repo.init(os.path.dirname(utils.get_base_dir()))
-        origin = repo.create_remote("origin", "https://github.com/neongang/angry-telegram")
-        origin.fetch()
-        repo.create_head("master", origin.refs.master)
-        repo.heads.master.set_tracking_branch(origin.refs.master)
-        repo.heads.master.checkout(True)
-    return repo
 
 
 def parse_arguments():
