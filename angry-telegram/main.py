@@ -428,7 +428,6 @@ async def amain(first, client, allclients, web, arguments):
     logging.debug("got db")
     logging.info("Loading logging config...")
     handler.setLevel(db.get(__name__, "loglevel", logging.WARNING))
-
     to_load = None
     if arguments.heroku_deps_internal or arguments.docker_deps_internal:
         to_load = ["loader.py",
