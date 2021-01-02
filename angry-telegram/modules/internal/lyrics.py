@@ -16,7 +16,7 @@
 
 # requires: lyricsgenius
 
-from .. import loader, utils
+from ... import loader, utils
 
 import logging
 import lyricsgenius

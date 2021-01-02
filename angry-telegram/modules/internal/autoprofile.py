@@ -20,7 +20,7 @@ import time
 import logging
 from io import BytesIO
 from telethon.tl import functions
-from .. import loader, utils
+from ... import loader, utils
 
 logger = logging.getLogger(__name__)
 

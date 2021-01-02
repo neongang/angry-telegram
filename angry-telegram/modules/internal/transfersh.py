@@ -18,7 +18,7 @@ import logging
 import requests
 import asyncio
 
-from .. import loader, utils
+from ... import loader, utils
 
 logger = logging.getLogger(__name__)
 

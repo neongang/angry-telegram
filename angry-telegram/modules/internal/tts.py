@@ -20,7 +20,7 @@ from gtts import gTTS
 
 from io import BytesIO
 
-from .. import loader, utils
+from ... import loader, utils
 
 
 @loader.tds

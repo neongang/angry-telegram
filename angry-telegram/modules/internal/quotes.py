@@ -22,7 +22,7 @@ import base64
 import json
 import telethon
 
-from .. import loader, utils
+from ... import loader, utils
 from PIL import Image
 from io import BytesIO
 

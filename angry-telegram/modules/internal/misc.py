@@ -14,8 +14,8 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from .. import loader, utils
-from ..loader import ModuleConfig as mc
+from ... import loader, utils
+from ...loader import ModuleConfig as mc
 
 import logging
 import random

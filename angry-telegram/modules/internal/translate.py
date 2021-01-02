@@ -19,7 +19,7 @@
 import logging
 from Yandex import Translate
 
-from .. import loader, utils
+from ... import loader, utils
 
 logger = logging.getLogger(__name__)
 

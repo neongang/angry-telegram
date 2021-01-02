@@ -16,7 +16,7 @@
 
 import telethon
 
-from .. import loader, utils
+from ... import loader, utils
 
 
 @loader.tds

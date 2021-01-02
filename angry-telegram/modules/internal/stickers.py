@@ -16,7 +16,7 @@
 
 # requires: git+https://gitlab.com/mattia.basaglia/python-lottie@master cairosvg Pillow>=6.1.0
 
-from .. import loader, utils
+from ... import loader, utils
 
 import logging
 import warnings

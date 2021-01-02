@@ -20,9 +20,9 @@ import logging
 import pyowm
 import math
 
-from .. import loader, utils
+from ... import loader, utils
 
-from ..utils import escape_html as eh
+from ...utils import escape_html as eh
 
 logger = logging.getLogger(__name__)
 

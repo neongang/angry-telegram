@@ -19,7 +19,7 @@ import logging
 
 from telethon.tl.types import InputMediaDice
 
-from .. import loader, utils, security
+from ... import loader, utils, security
 
 logger = logging.getLogger(__name__)
 

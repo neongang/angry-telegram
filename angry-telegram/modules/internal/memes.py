@@ -16,7 +16,7 @@
 
 # requires: pyfiglet
 
-from .. import loader, utils
+from ... import loader, utils
 import logging
 import random
 import re

@@ -19,7 +19,7 @@
 import logging
 
 import asyncurban
-from .. import loader, utils
+from ... import loader, utils
 
 logger = logging.getLogger(__name__)
 

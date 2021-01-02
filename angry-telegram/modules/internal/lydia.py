@@ -19,7 +19,7 @@
 
 # requires: coffeehouse>=2.2.0
 
-from .. import loader, utils
+from ... import loader, utils
 import logging
 import asyncio
 import time
