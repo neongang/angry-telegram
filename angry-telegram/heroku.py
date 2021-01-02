@@ -27,11 +27,14 @@ import heroku3
 from . import utils
 
 
-def publish(clients, key, api_token=None, create_new=True, full_match=False):
+def publish(clients, key, api_token=None, create_new=True,
+            full_match=False, region="eu"):
     """Push to heroku"""
     logging.debug("Configuring heroku...")
     data = json.dumps({getattr(client, "phone", ""): StringSession.save(client.session) for client in clients})
-    app, config = get_app(data, key, api_token, create_new, full_match)
+    app, config = get_app(data, key, api_token,
+                          create_new, full_match,
+                          region)
     config["authorization_strings"] = data
     config["heroku_api_token"] = key
     if api_token is not None:
@@ -50,7 +53,8 @@ def publish(clients, key, api_token=None, create_new=True, full_match=False):
     return app
 
 
-def get_app(authorization_strings, key, api_token=None, create_new=True, full_match=False):
+def get_app(authorization_strings, key, api_token=None, create_new=True,
+            full_match=False, region="eu"):
     heroku = heroku3.from_key(key)
     app = None
     for poss_app in heroku.apps():
@@ -66,7 +70,8 @@ def get_app(authorization_strings, key, api_token=None, create_new=True, full_ma
         if api_token is None or not create_new:
             logging.error("%r", {app: repr(app.config) for app in heroku.apps()})
             raise RuntimeError("Could not identify app!")
-        app = heroku.create_app(stack_id_or_name="heroku-18", region_id_or_name="us")
+        app = heroku.create_app(stack_id_or_name="heroku-18",
+                                region_id_or_name=region)
         config = app.config()
     return app, config
 
