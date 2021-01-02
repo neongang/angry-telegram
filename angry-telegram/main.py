@@ -213,7 +213,8 @@ def main():  # noqa: C901
             loop.run_until_complete(web.start())
             print("Web mode ready for configuration")  # noqa: T001
             if not arguments.heroku_web_internal:
-                print("Please visit http://localhost:" + str(web.port))  # noqa: T001
+                # This is an angry-telegram, so we don't need the details
+                print("Please visit configurator page")  # noqa: T001
             loop.run_until_complete(web.wait_for_api_token_setup())
             api_token = web.api_token
         else:
@@ -263,7 +264,7 @@ def main():  # noqa: C901
                 loop.run_until_complete(web.start())
                 print("Web mode ready for configuration")  # noqa: T001
                 if not arguments.heroku_web_internal:
-                    print("Please visit http://localhost:" + str(web.port))  # noqa: T001
+                    print("Please visit configurator page")  # noqa: T001
             loop.run_until_complete(web.wait_for_clients_setup())
             arguments.heroku = web.heroku_api_token
             clients = web.clients
