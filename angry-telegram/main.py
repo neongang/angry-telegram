@@ -41,6 +41,7 @@ from telethon.network.connection import ConnectionTcpFull
 
 from . import utils, loader, heroku, security
 from .dispatcher import CommandDispatcher
+from .heroku import get_repo
 
 
 from .database import backend, local_backend, frontend
@@ -212,7 +213,8 @@ def main():  # noqa: C901
             loop.run_until_complete(web.start())
             print("Web mode ready for configuration")  # noqa: T001
             if not arguments.heroku_web_internal:
-                print("Please visit http://localhost:" + str(web.port))  # noqa: T001
+                # This is an angry-telegram, so we don't need the details
+                print("Please visit configurator page")  # noqa: T001
             loop.run_until_complete(web.wait_for_api_token_setup())
             api_token = web.api_token
         else:
@@ -262,7 +264,7 @@ def main():  # noqa: C901
                 loop.run_until_complete(web.start())
                 print("Web mode ready for configuration")  # noqa: T001
                 if not arguments.heroku_web_internal:
-                    print("Please visit http://localhost:" + str(web.port))  # noqa: T001
+                    print("Please visit configurator page")  # noqa: T001
             loop.run_until_complete(web.wait_for_clients_setup())
             arguments.heroku = web.heroku_api_token
             clients = web.clients
@@ -306,9 +308,16 @@ def main():  # noqa: C901
         else:
             session = os.path.join(arguments.data_root or os.path.dirname(utils.get_base_dir()), "angry-telegram"
                                    + (("-" + phone_id) if phone_id else ""))
+        repo = get_repo()
+        commit = repo.git.rev_parse(repo.head.object.hexsha,
+                                    short=7)
+        branch = repo.active_branch.name
         try:
             client = TelegramClient(session, api_token.ID, api_token.HASH,
-                                    connection=conn, proxy=proxy, connection_retries=None)
+                                    connection=conn, proxy=proxy, connection_retries=None,
+                                    device_model="Xiaomi Redmi Note 11 Pro Max",
+                                    system_version="Android 12 S? (31)",
+                                    app_version="{}.{}".format(branch, commit))
             if arguments.test_dc is not False:
                 client.session.set_dc(client.session.dc_id, "149.154.167.40", 80)
             if ":" in phone:
