@@ -1,0 +1,73 @@
+# Change pip's cache directory to be inside the project directory since we can
+# only cache local items.
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+# Pip's cache doesn't store the python packages
+# https://pip.pypa.io/en/stable/reference/pip_install/#caching
+#
+# If you want to also cache the installed packages, you have to install
+# them in a virtualenv and cache it as well.
+cache:
+  paths:
+    - .cache/pip
+    - .tox
+
+
+.send_message: &send_message
+  cache: {}
+  image: curlimages/curl:latest
+  script:
+    - if [ "$TELEGRAM_BOT_TOKEN" == "" ]; then
+    -   echo "$message"
+    - else
+    - '  echo "Sending ''$message'' to $TELEGRAM_CHAT_ID"'
+    - '  curl -X POST --data-urlencode chat_id="$TELEGRAM_CHAT_ID" --data-urlencode text="$message" --data-urlencode parse_mode="HTML" --data-urlencode disable_web_page_preview=true https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage'
+    - fi
+
+notify_start:
+  stage: .pre
+  before_script:
+    - 'message="Starting CI job <a href=\"$CI_PIPELINE_URL\">$CI_PIPELINE_IID</a> for <a href=\""'
+    - 'if [ "$CI_MERGE_REQUEST_IID" == "" ]; then'
+    - '  message="$message$CI_PROJECT_URL"'
+    - else
+    - '  message="$message$CI_MERGE_REQUEST_SOURCE_PROJECT_URL"'
+    - fi
+    - 'message="$message/-/commit/$CI_COMMIT_SHA\">$CI_PROJECT_NAME/$CI_COMMIT_SHORT_SHA</a>"'
+    - 'if [ "$CI_MERGE_REQUEST_IID" != "" ]; then'
+    - '  message="$message (that''s <a href=\"$CI_MERGE_REQUEST_TARGET_PROJECT_URL/-/merge_requests/$CI_MERGE_REQUEST_IID\">!$CI_MERGE_REQUEST_IID</a>)"'
+    - fi
+  <<: *send_message
+
+before_script:
+  - pip install tox
+
+python36:
+  image: python:3.6
+  script: tox -e py36
+
+python37:
+  image: python:3.7
+  script: tox -e py37
+
+python38:
+  image: python:3.8
+  script: tox -e py38
+
+notify_success:
+  rules:
+    - when: on_success
+  stage: .post
+  before_script:
+    - message="Job $CI_PIPELINE_IID <b>passed</b>!"
+  <<: *send_message
+
+notify_failure:
+  rules:
+    - when: on_failure
+  stage: .post
+  before_script:
+    - message="Job $CI_PIPELINE_IID <b>failed</b>! <a href=\"$CI_PIPELINE_URL\">See the full output</a>"
+  <<: *send_message
+
