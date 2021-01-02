@@ -57,9 +57,26 @@ errorout() {
   cat ftg-install.log
 }
 
+banner() {
+  clear
+  clear
+  printf "%s\n" "                         "
+  printf "%s\n" " ___ ____  ___ _______ __"
+  printf "%s\n" "/ _ \`/ _ \\/ _ \`/ __/ // /"
+  printf "%s\n" "\\_,_/_//_/\\_, /_/  \\_, / "
+  printf "%s\n" "         /___/    /___/  "
+  printf "%s\n" "  __      __                      "
+  printf "%s\n" " / /____ / /__ ___ ________ ___ _ "
+  printf "%s\n" "/ __/ -_) / -_) _ \`/ __/ _ \`/  ' \\"
+  printf "%s\n" "\\__/\\__/_/\\__/\\_, /_/  \\_,_/_/_/_/"
+  printf "%s\n" "             /___/                "
+  printf "%s\n" ""
+}
+
+
 ##############################################################################
 
-printf '%s\n' "Angry Telegram"
+banner
 printf '%s\n' "The process takes around 3-7 minutes"
 printf '%s' "Installing now...  "
 
