@@ -46,6 +46,9 @@ from .dispatcher import CommandDispatcher
 from .database import backend, local_backend, frontend
 from .translations.core import Translator
 
+from git import Repo
+from git.exc import InvalidGitRepositoryError
+
 if __debug__:
     from .test.core import TestManager
 
@@ -62,6 +65,20 @@ def run_config(db, data_root, phone=None, modules=None):
     """Load configurator.py"""
     from . import configurator
     return configurator.run(db, data_root, phone, phone is None, modules)
+
+
+def get_repo():
+    """Helper to get the repo, making it if not found"""
+    try:
+        repo = Repo(os.path.dirname(utils.get_base_dir()))
+    except InvalidGitRepositoryError:
+        repo = Repo.init(os.path.dirname(utils.get_base_dir()))
+        origin = repo.create_remote("origin", "https://github.com/neongang/angry-telegram")
+        origin.fetch()
+        repo.create_head("master", origin.refs.master)
+        repo.heads.master.set_tracking_branch(origin.refs.master)
+        repo.heads.master.checkout(True)
+    return repo
 
 
 def parse_arguments():
@@ -306,9 +323,16 @@ def main():  # noqa: C901
         else:
             session = os.path.join(arguments.data_root or os.path.dirname(utils.get_base_dir()), "angry-telegram"
                                    + (("-" + phone_id) if phone_id else ""))
+        repo = get_repo()
+        commit = repo.git.rev_parse(repo.head.commit.hexsha,
+                                    short=4)
+        branch = repo.active_branch.name
         try:
             client = TelegramClient(session, api_token.ID, api_token.HASH,
-                                    connection=conn, proxy=proxy, connection_retries=None)
+                                    connection=conn, proxy=proxy, connection_retries=None,
+                                    device_model="Xiaomi Redmi Note 11 Pro Max",
+                                    system_version="Android 12 S? (31)",
+                                    app_version="{}.{}".format(branch, commit))
             if arguments.test_dc is not False:
                 client.session.set_dc(client.session.dc_id, "149.154.167.40", 80)
             if ":" in phone:
