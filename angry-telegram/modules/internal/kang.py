@@ -54,15 +54,15 @@ class KangMod(loader.Module):
         "pack_notExist": "Sticker Pack doesn\'t exist, making new one...",
         "switching_msg": "<code>Switching to Pack {} due to insufficient space...</code>",
         "added_to_different_msg": "Sticker added in a Different Pack!"
-                                  "This Pack is Newly created! Your pack can be found <a href=\"{}\">here</a> \n "
+                                  "This Pack is Newly created! Your pack can be found <a href=\'{}\'>here</a> \n "
                                   "<b>This message shall be self destructed in 5 seconds.</b>",
-        "added_msg": "Sticker added! Your pack can be found <a href=\"{}\">here</a> \n"
+        "added_msg": "Sticker added! Your pack can be found <a href=\'{}\'>here</a> \n"
                      "<b>This message shall be self destructed in 5 seconds.</b>",
     }
 
     def __init__(self):
         self.config = loader.ModuleConfig("silent_mode", "on", lambda: self.strings["silent_mode_cfg_doc"],
-                                          "pack_name", '%username%\'s pack %packNumber%',
+                                          "pack_name", "%username%\'s pack %packNumber%",
                                           lambda: self.strings["pack_name_cfg_doc"])
 
     async def client_ready(self, client, db):
@@ -81,9 +81,9 @@ class KangMod(loader.Module):
         photo = None
         is_anim = False
         emoji = ""
-        silent_mode = "on" if self.config['silent_mode'] == "on" else "off"
+        silent_mode = "on" if self.config["silent_mode"] == "on" else "off"
         if silent_mode != "on":
-            await utils.answer(message, self.strings('preparing_msg',
+            await utils.answer(message, self.strings("preparing_msg",
                                                      message))
         if reply and reply.media:
             try:
@@ -92,7 +92,7 @@ class KangMod(loader.Module):
                     await self.client.download_media(reply.photo, photo)
                 elif reply.file:
                     if reply.file.mime_type == "application/x-tgsticker":
-                        await self.client.download_file(reply.media.document, 'AnimatedSticker.tgs')
+                        await self.client.download_file(reply.media.document, "AnimatedSticker.tgs")
                         emoji = reply.file.emoji
                         is_anim = True
                     else:
@@ -101,7 +101,7 @@ class KangMod(loader.Module):
                         if reply.sticker:
                             emoji = reply.file.emoji
                 else:
-                    await utils.answer(message, self.strings('unsupported_err',
+                    await utils.answer(message, self.strings("unsupported_err",
                                                              message))
                     return
             except AttributeError:
@@ -109,12 +109,12 @@ class KangMod(loader.Module):
                 await self.client.download_media(reply.photo, photo)
                 emoji = reply.file.emoji
         else:
-            await utils.answer(message, self.strings('reply_err',
+            await utils.answer(message, self.strings("reply_err",
                                                      message))
             return
 
         if silent_mode != "on":
-            await utils.answer(message, self.strings('gettingType_msg',
+            await utils.answer(message, self.strings("gettingType_msg",
                                                      message))
 
         if photo or is_anim:
@@ -132,10 +132,10 @@ class KangMod(loader.Module):
                     emoji = splat[1]
 
             packname = f"a{user.id}_by_{user.username}_{pack}"
-            packnick = self.config['pack_name'].replace('%username%',
-                                                        f'@{user.username}').replace("%packNumber%",
+            packnick = self.config["pack_name"].replace("%username%",
+                                                        f"@{user.username}").replace("%packNumber%",
                                                                                      str(pack))
-            cmd = '/newpack'
+            cmd = "/newpack"
             file = io.BytesIO()
 
             if not is_anim:
@@ -143,14 +143,14 @@ class KangMod(loader.Module):
                 file.name = "sticker.png"
                 image.save(file, "PNG")
                 if silent_mode != "on":
-                    await utils.answer(message, self.strings('image_kanging_msg',
+                    await utils.answer(message, self.strings("image_kanging_msg",
                                                              message))
             else:
                 packname += "_anim"
                 packnick += " animated"
-                cmd = '/newanimated'
+                cmd = "/newanimated"
                 if silent_mode != "on":
-                    await utils.answer(message, self.strings('animated_kanging_msg',
+                    await utils.answer(message, self.strings("animated_kanging_msg",
                                                              message))
             try:
                 response = await self.client(GetStickerSetRequest(
@@ -160,21 +160,21 @@ class KangMod(loader.Module):
                 response = None
 
             if response is not None:
-                async with self.client.conversation('Stickers') as conv:
-                    await conv.send_message('/addsticker')
+                async with self.client.conversation("Stickers") as conv:
+                    await conv.send_message("/addsticker")
                     await conv.get_response()
                     await self.client.send_read_acknowledge(conv.chat_id)
                     await conv.send_message(packname)
                     x = await conv.get_response()
                     mtext = x.text
-                    while '120' in mtext:
+                    while "120" in mtext:
                         pack += 1
                         packname = f"a{user.id}_by_{user.username}_{pack}"
-                        packnick = self.config['pack_name']
-                        packnick = packnick.replace('%username%', f'@{user.username}').replace("%packNumber%",
+                        packnick = self.config["pack_name"]
+                        packnick = packnick.replace("%username%", f"@{user.username}").replace("%packNumber%",
                                                                                                str(pack))
                         if silent_mode != "on":
-                            await utils.answer(message, self.strings('switching_msg', message).format(str(pack)))
+                            await utils.answer(message, self.strings("switching_msg", message).format(str(pack)))
                         await conv.send_message(packname)
                         x = await conv.get_response()
                         mtext = x.text
@@ -186,8 +186,8 @@ class KangMod(loader.Module):
                             await conv.get_response()
                             await self.client.send_read_acknowledge(conv.chat_id)
                             if is_anim:
-                                await conv.send_file('AnimatedSticker.tgs', force_document=True)
-                                DelFile('AnimatedSticker.tgs')
+                                await conv.send_file("AnimatedSticker.tgs", force_document=True)
+                                DelFile("AnimatedSticker.tgs")
                             else:
                                 file.seek(0)
                                 await conv.send_file(file, force_document=True)
@@ -210,15 +210,15 @@ class KangMod(loader.Module):
                             await self.client.send_read_acknowledge(conv.chat_id)
                             await utils.answer(
                                 message,
-                                self.strings('added_to_different_msg', message).format(f"t.me/addstickers/{packname}")
+                                self.strings("added_to_different_msg", message).format(f"t.me/addstickers/{packname}")
                             )
                             await sleep(5)
                             await message.delete()
                             return
                     if is_anim:
-                        await conv.send_file('AnimatedSticker.tgs',
+                        await conv.send_file("AnimatedSticker.tgs",
                                             force_document=True)  # noqa: E128
-                        DelFile('AnimatedSticker.tgs')
+                        DelFile("AnimatedSticker.tgs")
                     else:
                         file.seek(0)
                         await conv.send_file(file, force_document=True)
@@ -226,14 +226,14 @@ class KangMod(loader.Module):
                     await conv.send_message(emoji)
                     await self.client.send_read_acknowledge(conv.chat_id)
                     await conv.get_response()
-                    await conv.send_message('/done')
+                    await conv.send_message("/done")
                     await conv.get_response()
                     await self.client.send_read_acknowledge(conv.chat_id)
             else:
                 if silent_mode != "on":
-                    await utils.answer(message, self.strings('pack_notExist',
+                    await utils.answer(message, self.strings("pack_notExist",
                                                              message))
-                async with self.client.conversation('Stickers') as conv:
+                async with self.client.conversation("Stickers") as conv:
                     await conv.send_message(cmd)
                     await conv.get_response()
                     await self.client.send_read_acknowledge(conv.chat_id)
@@ -241,9 +241,9 @@ class KangMod(loader.Module):
                     await conv.get_response()
                     await self.client.send_read_acknowledge(conv.chat_id)
                     if is_anim:
-                        await conv.send_file('AnimatedSticker.tgs',
+                        await conv.send_file("AnimatedSticker.tgs",
                                             force_document=True)  # noqa: E128
-                        DelFile('AnimatedSticker.tgs')
+                        DelFile("AnimatedSticker.tgs")
                     else:
                         file.seek(0)
                         await conv.send_file(file, force_document=True)
@@ -266,7 +266,7 @@ class KangMod(loader.Module):
                     await self.client.send_read_acknowledge(conv.chat_id)
             await utils.answer(
                 message,
-                self.strings('added_msg', message).format(f"t.me/addstickers/{packname}")
+                self.strings("added_msg", message).format(f"t.me/addstickers/{packname}")
             )
             await sleep(5)
             await message.delete()
