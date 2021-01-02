@@ -9,7 +9,7 @@ Angry Telegram, also known as ATG, is your average Telegram userbot: it's faster
 - brain
 
 ### Documentation
-We've didn't make any docs to help you to set-up the bot.
+We didn't make any docs to help you to set-up the bot.
 They can't be found, sorry.
 
 ### Support
