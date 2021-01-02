@@ -27,6 +27,7 @@ import telethon
 from telethon.tl.types import PeerUser, PeerChat, PeerChannel, MessageEntityMentionName, User, MessageMediaWebPage
 from telethon.tl.custom.message import Message
 from telethon.extensions import html
+from pathlib import Path
 
 from . import __main__
 
@@ -93,6 +94,11 @@ def escape_quotes(text):
 def get_base_dir():
     """Get directory of this file"""
     return get_dir(__main__.__file__)
+
+
+def get_module_dir():
+    """Get directory the module was ran on"""
+    return Path(os.path.realpath(__file__)).parent.parent
 
 
 def get_dir(mod):

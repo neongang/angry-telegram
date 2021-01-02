@@ -158,19 +158,27 @@ class Modules():
         if self._compat_layer is None:
             from . import compat  # Avoid circular import
             self._compat_layer = compat.activate([])
+
         if not mods:
-            mods = filter(lambda x: (len(x) > 3 and x[-3:] == ".py" and x[0] != "_"),
-                          os.listdir(os.path.join(utils.get_base_dir(), MODULES_NAME)))
-        logging.debug(mods)
-        for mod in mods:
+            modules_files = []
+            root_dir = os.path.join(utils.get_base_dir(), MODULES_NAME)
+
+            for address, _, files in os.walk(root_dir):
+                for file in files:
+                    filepath = os.path.join(address, file)
+                    rel_dir = os.path.relpath(address, utils.get_module_dir())
+                    rel_file = os.path.join(rel_dir, file)
+
+                    modules_files.append((file, rel_file, filepath))
+            mods = filter(lambda x: (len(x[0]) > 3 and x[0][-3:] == ".py" and x[0][0] != "_"), modules_files)
+        for filename, rel_path, full_path in mods:
             try:
-                module_name = __package__ + "." + MODULES_NAME + "." + os.path.basename(mod)[:-3]  # FQN
-                logging.debug(module_name)
-                spec = importlib.util.spec_from_file_location(module_name,
-                                                              os.path.join(utils.get_base_dir(), MODULES_NAME, mod))
+                # IQ 900
+                module_name = rel_path[:-3].replace(os.sep, ".")
+                spec = importlib.util.spec_from_file_location(module_name, full_path)
                 self.register_module(spec, module_name)
             except BaseException:
-                logging.exception("Failed to load module %s due to:", mod)
+                logging.exception("Failed to load module %s due to:", filename)
 
     def register_module(self, spec, module_name):
         """Register single module from importlib spec"""

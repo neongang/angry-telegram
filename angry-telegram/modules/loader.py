@@ -19,10 +19,8 @@ import importlib
 import sys
 import uuid
 import asyncio
-import urllib
 import os
 import re
-import requests
 
 from importlib.machinery import ModuleSpec
 from importlib.abc import SourceLoader
@@ -104,13 +102,6 @@ class LoaderMod(loader.Module):
                "requirements_installing": "<b>Installing requirements...</b>",
                "requirements_restart": "<b>Requirements installed, but a restart is required</b>"}
 
-    def __init__(self):
-        super().__init__()
-        # TODO: Remove modules repo
-        self.config = loader.ModuleConfig("MODULES_REPO",
-                                          "https://gitlab.com/friendly-telegram/modules-repo/-/raw/master",
-                                          lambda m: self.strings("repo_config_doc", m))
-
     @loader.owner
     async def dlmodcmd(self, message):
         """Downloads and installs a module from the official module repo"""
@@ -124,51 +115,7 @@ class LoaderMod(loader.Module):
             await utils.answer(message, "<b>" + self.strings("avail_header", message)
                                + "</b>\n<code>" + text + "</code>")
 
-    @loader.owner
-    async def dlpresetcmd(self, message):
-        """Set preset. Defaults to full"""
-        args = utils.get_args(message)
-        if not args:
-            await utils.answer(message, self.strings("select_preset", message))
-            return
-        try:
-            await self.get_repo_list(args[0])
-        except requests.exceptions.HTTPError as e:
-            if e.response.status_code == 404:
-                await utils.answer(message, self.strings("no_preset", message))
-                return
-            else:
-                raise
-        self._db.set(__name__, "chosen_preset", args[0])
-        self._db.set(__name__, "loaded_modules", [])
-        self._db.set(__name__, "unloaded_modules", [])
         await utils.answer(message, self.strings("preset_loaded", message))
-
-    async def _get_modules_to_load(self):
-        todo = await self.get_repo_list(self._db.get(__name__, "chosen_preset", None))
-        todo = todo.difference(self._db.get(__name__, "unloaded_modules", []))
-        todo.update(self._db.get(__name__, "loaded_modules", []))
-        return todo
-
-    async def get_repo_list(self, preset=None):
-        if preset is None:
-            preset = "minimal"
-        r = await utils.run_sync(requests.get, self.config["MODULES_REPO"] + "/" + preset + ".txt")
-        r.raise_for_status()
-        return set(filter(lambda x: x, r.text.split("\n")))
-
-    async def download_and_install(self, module_name, message=None):
-        if urllib.parse.urlparse(module_name).netloc:
-            url = module_name
-        else:
-            url = self.config["MODULES_REPO"] + "/" + module_name + ".py"
-        r = await utils.run_sync(requests.get, url)
-        if r.status_code == 404:
-            if message is not None:
-                await utils.answer(message, self.strings("no_module", message))
-            return False
-        r.raise_for_status()
-        return await self.load_module(r.content.decode("utf-8"), message, module_name, url)
 
     @loader.owner
     async def loadmodcmd(self, message):
@@ -287,4 +234,3 @@ class LoaderMod(loader.Module):
     async def client_ready(self, client, db):
         self._db = db
         self._client = client
-        await self._update_modules()
