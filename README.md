@@ -4,9 +4,7 @@ A fast, hard to setup telegram userbot written in python3 which uses [Telethon](
 Angry Telegram, also known as ATG, is your average Telegram userbot: it's faster, can load modules dynamically and is very hard to use!
 
 ### Requirements
-- Python 3.6 or above
-- API ID and Hash from [Telegram](https://my.telegram.org/apps)
-- Some basic knowledege (although you can usually mindlessly copy&paste from the docs)
+- brain
 
 ### Documentation
 We didn't make any docs to help you to set-up the bot.
