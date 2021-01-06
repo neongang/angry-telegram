@@ -68,13 +68,13 @@ class TestManager:
                 await self._db.set(security.__name__, "bounding_mask", 1)
                 modules_files = []
                 root_dir = os.path.join(utils.get_base_dir(), loader.MODULES_NAME)
-                for address, _, files in os.walk(root_dir):
-                    for file in files:
-                        filepath = os.path.join(address, file)
-                        rel_dir = os.path.relpath(address, utils.get_module_dir())
-                        rel_file = os.path.join(rel_dir, file)
 
-                        modules_files.append((file, rel_file, filepath))
+                for file in os.listdir(root_dir):
+                    filepath = os.path.join(root_dir, file)
+                    rel_dir = os.path.relpath(root_dir, utils.get_module_dir())
+                    rel_file = os.path.join(rel_dir, file)
+
+                    modules_files.append((file, rel_file, filepath))
                 mods = filter(lambda x: (len(x[0]) > 3 and x[0][-3:] == ".py" and x[0][0] != "_"), modules_files)
                 return [("usermodule.py",
                          "angry-telegram/test/usermodule.py",
