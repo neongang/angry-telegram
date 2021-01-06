@@ -15,6 +15,8 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import urllib
+import requests
 import importlib
 import sys
 import uuid
@@ -85,10 +87,6 @@ class LoaderMod(loader.Module):
     """Loads modules"""
     strings = {"name": "Loader",
                "repo_config_doc": "Fully qualified URL to a module repo",
-               "avail_header": "<b>Available official modules from repo</b>",
-               "select_preset": "<b>Please select a preset</b>",
-               "no_preset": "<b>Preset not found</b>",
-               "preset_loaded": "<b>Preset loaded</b>",
                "no_module": "<b>Module not available in repo.</b>",
                "no_file": "<b>File not found</b>",
                "provide_module": "<b>Provide a module to load</b>",
@@ -100,6 +98,7 @@ class LoaderMod(loader.Module):
                "not_unloaded": "<b>Module not unloaded.</b>",
                "requirements_failed": "<b>Requirements installation failed</b>",
                "requirements_installing": "<b>Installing requirements...</b>",
+               "no_link": "<b>Link is needed. </b>",
                "requirements_restart": "<b>Requirements installed, but a restart is required</b>"}
 
     @loader.owner
@@ -111,11 +110,20 @@ class LoaderMod(loader.Module):
                 self._db.set(__name__, "loaded_modules",
                              list(set(self._db.get(__name__, "loaded_modules", [])).union([args[0]])))
         else:
-            text = utils.escape_html("\n".join(await self.get_repo_list("full")))
-            await utils.answer(message, "<b>" + self.strings("avail_header", message)
-                               + "</b>\n<code>" + text + "</code>")
+            return await utils.answer(message, self.strings("no_link"))
 
-        await utils.answer(message, self.strings("preset_loaded", message))
+    async def download_and_install(self, module_name, message=None):
+        if urllib.parse.urlparse(module_name).netloc:
+            url = module_name
+        else:
+            return
+        r = await utils.run_sync(requests.get, url)
+        if r.status_code == 404:
+            if message is not None:
+                await utils.answer(message, self.strings("no_module", message))
+            return False
+        r.raise_for_status()
+        return await self.load_module(r.content.decode("utf-8"), message, module_name, url)
 
     @loader.owner
     async def loadmodcmd(self, message):
