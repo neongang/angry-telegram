@@ -72,6 +72,8 @@ def parse_arguments():
     parser.add_argument("--phone", "-p", action="append")
     parser.add_argument("--token", "-t", action="append", dest="tokens")
     parser.add_argument("--heroku", action="store_true")
+    parser.add_argument("--heroku-deploy-region", dest="heroku_region", action="store",
+                        help="The Heroku region where the userbot will be hosted.")
     parser.add_argument("--local-db", dest="local", action="store_true")
     parser.add_argument("--web-only", dest="web_only", action="store_true")
     parser.add_argument("--no-web", dest="web", action="store_false")
@@ -317,7 +319,7 @@ def main():  # noqa: C901
                                     connection=conn, proxy=proxy, connection_retries=None,
                                     device_model="Xiaomi Redmi Note 11 Pro Max",
                                     system_version="Android 12 S? (31)",
-                                    app_version="{}.{}".format(branch, commit))
+                                    app_version="{}-{}".format(commit, branch))
             if arguments.test_dc is not False:
                 client.session.set_dc(client.session.dc_id, "149.154.167.40", 80)
             if ":" in phone:
@@ -351,9 +353,17 @@ def main():  # noqa: C901
         if isinstance(arguments.heroku, str):
             key = arguments.heroku
         else:
-            key = input("Please enter your Heroku API key (from https://dashboard.heroku.com/account): ").strip()
-        app = heroku.publish(clients, key, api_token)
-        print("Installed to heroku successfully! Type .help in Telegram for help.")  # noqa: T001
+            key = input("Please enter your Heroku API key: ").strip()
+        _allowed_regions = ["us", "eu"]
+        if (arguments.heroku_region is not None
+                and arguments.heroku_region in _allowed_regions):
+            region = arguments.heroku_region
+        else:
+            region = input("Please enter Heroku region name(us/eu): ").strip()
+        region = region if region in _allowed_regions else "eu"
+        app = heroku.publish(clients, key,
+                             api_token, region=region)
+        print("Installed to heroku successfully!")  # noqa: T001
         if web:
             web.redirect_url = app.web_url
             web.ready.set()
@@ -421,7 +431,10 @@ async def amain(first, client, allclients, web, arguments):
 
     to_load = None
     if arguments.heroku_deps_internal or arguments.docker_deps_internal:
-        to_load = ["loader.py"]
+        to_load = [("loader.py",
+                    "angry-telegram/modules/loader.py",
+                    os.path.join(utils.get_module_dir(),
+                                 "angry-telegram/modules/loader.py"))]
 
     if __debug__ and arguments.self_test:
         tester = TestManager(client, db, allclients, arguments.self_test)
